@@ -1,13 +1,14 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import {newNote, getAllNotes, findNotes, removeNote, removeAllNotes} from './notes.js'
+import { newNote, getAllNotes, findNotes, removeNote, removeAllNotes } from './notes.js'
+import { start } from './server.js'
 
 const listNotes = (notes) => {
   notes.forEach(note => {
     console.log('\n')
     console.log('id: ', note.id)
     console.log('tags: ', note.tags.join(', ')),
-    console.log('note: ', note.content)
+      console.log('note: ', note.content)
   })
 }
 
@@ -27,7 +28,7 @@ yargs(hideBin(process.argv))
     type: 'string',
     description: 'tags to add to the note'
   })
-  .command('all', 'get all notes', () => {}, async (argv) => {
+  .command('all', 'get all notes', () => { }, async (argv) => {
     const notes = await getAllNotes()
     listNotes(notes)
   })
@@ -61,9 +62,10 @@ yargs(hideBin(process.argv))
         type: 'number'
       })
   }, async (argv) => {
-    
+    const notes = await getAllNotes()
+    start(notes, argv.port)
   })
-  .command('clean', 'remove all notes', () => {}, async (argv) => {
+  .command('clean', 'remove all notes', () => { }, async (argv) => {
     await removeAllNotes()
     console.log('All notes removed')
   })
